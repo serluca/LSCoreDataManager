@@ -1,0 +1,2 @@
+LSCoreDataManager
+=================
