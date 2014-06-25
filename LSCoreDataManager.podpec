@@ -1,0 +1,14 @@
+Pod::Spec.new do |s|
+  s.name     = 'LSCoreDataManager’
+  s.platform = :ios, '7.0'
+  s.version  = ‘1.0’
+  s.license  = 'Copyright, 2014, Luca Serpico’
+  s.summary  = 'It's a nice library to manage the Core Data simplifying the developer's task in performance management.'
+  s.homepage = 'https://github.com/serluca/LSCoreDataManager'
+  s.author  = {‘Luca Serpico’ => ‘serpicoluca@gmail.com’}
+  s.source   = { :git => 'ssh://git@github.com:serluca/LSCoreDataManager.git', :tag => '1.0' }
+  s.requires_arc = true
+  s.platform = :ios, 7.0
+  s.ios.deployment_target = '7.0'
+  core.source_files = 'LSCoreDataManager/*.{h,m}'
+end
