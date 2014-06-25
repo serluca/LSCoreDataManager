@@ -3,7 +3,7 @@
 //  LSCoreDataManager
 //
 //  Created by Luca Serpico on 23/06/2014.
-//  Copyright (c) 2014 Luca Serpico. All rights reserved.
+//  Copyright (c) 2014 Luca Serpico. All rights reserved
 //
 
 #import <Foundation/Foundation.h>
