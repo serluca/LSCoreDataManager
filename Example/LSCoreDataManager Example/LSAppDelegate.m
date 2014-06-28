@@ -7,15 +7,22 @@
 //
 
 #import "LSAppDelegate.h"
+#import "LSCoreDataManager.h"
 
 @implementation LSAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
+    
+    NSURL *applicationDocumentsDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"LSModel" withExtension:@"momd"];
+    
+    NSURL *storeURL = [applicationDocumentsDirectory URLByAppendingPathComponent:@"LSModel.sqlite"];
+    
+    [[LSCoreDataManager sharedInstance] setupWithModelUrl:modelURL storeUrl:storeURL];
+    
     return YES;
 }
 

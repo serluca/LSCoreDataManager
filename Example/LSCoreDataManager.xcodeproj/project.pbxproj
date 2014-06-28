@@ -20,6 +20,9 @@
 		5A1D24FE1958228000DEB2D9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5A1D24FC1958228000DEB2D9 /* InfoPlist.strings */; };
 		5A1D25001958228000DEB2D9 /* LSCoreDataManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A1D24FF1958228000DEB2D9 /* LSCoreDataManagerTests.m */; };
 		5A99094A195B816C0040F408 /* LSCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A990949195B816C0040F408 /* LSCoreDataManager.m */; };
+		5AAFBB94195C829A00964DAF /* LSModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5AAFBB92195C829A00964DAF /* LSModel.xcdatamodeld */; };
+		5AAFBB96195C835900964DAF /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5AAFBB95195C835800964DAF /* MainStoryboard_iPhone.storyboard */; };
+		5AAFBB99195C83D300964DAF /* LSFirstTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AAFBB98195C83D300964DAF /* LSFirstTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +54,10 @@
 		5A1D24FF1958228000DEB2D9 /* LSCoreDataManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LSCoreDataManagerTests.m; sourceTree = "<group>"; };
 		5A990948195B816C0040F408 /* LSCoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSCoreDataManager.h; path = ../LSCoreDataManager/LSCoreDataManager.h; sourceTree = "<group>"; };
 		5A990949195B816C0040F408 /* LSCoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LSCoreDataManager.m; path = ../LSCoreDataManager/LSCoreDataManager.m; sourceTree = "<group>"; };
+		5AAFBB93195C829A00964DAF /* LSModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LSModel.xcdatamodel; sourceTree = "<group>"; };
+		5AAFBB95195C835800964DAF /* MainStoryboard_iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
+		5AAFBB97195C83D300964DAF /* LSFirstTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSFirstTableViewController.h; sourceTree = "<group>"; };
+		5AAFBB98195C83D300964DAF /* LSFirstTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSFirstTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +120,10 @@
 			children = (
 				5A1D24E91958228000DEB2D9 /* LSAppDelegate.h */,
 				5A1D24EA1958228000DEB2D9 /* LSAppDelegate.m */,
+				5AAFBB92195C829A00964DAF /* LSModel.xcdatamodeld */,
+				5AAFBB95195C835800964DAF /* MainStoryboard_iPhone.storyboard */,
+				5AAFBB97195C83D300964DAF /* LSFirstTableViewController.h */,
+				5AAFBB98195C83D300964DAF /* LSFirstTableViewController.m */,
 				5A1D24EC1958228000DEB2D9 /* Images.xcassets */,
 				5A1D24E11958228000DEB2D9 /* Supporting Files */,
 			);
@@ -233,6 +244,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AAFBB96195C835900964DAF /* MainStoryboard_iPhone.storyboard in Resources */,
 				5A1D24E51958228000DEB2D9 /* InfoPlist.strings in Resources */,
 				5A1D24ED1958228000DEB2D9 /* Images.xcassets in Resources */,
 			);
@@ -253,6 +265,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AAFBB94195C829A00964DAF /* LSModel.xcdatamodeld in Sources */,
+				5AAFBB99195C83D300964DAF /* LSFirstTableViewController.m in Sources */,
 				5A1D24E71958228000DEB2D9 /* main.m in Sources */,
 				5A1D24EB1958228000DEB2D9 /* LSAppDelegate.m in Sources */,
 				5A99094A195B816C0040F408 /* LSCoreDataManager.m in Sources */,
@@ -378,6 +392,7 @@
 				GCC_PREFIX_HEADER = "LSCoreDataManager Example/Supporting Files/LSCoreDataManager-Prefix.pch";
 				INFOPLIST_FILE = "LSCoreDataManager Example/Supporting Files/LSCoreDataManager-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -391,6 +406,7 @@
 				GCC_PREFIX_HEADER = "LSCoreDataManager Example/Supporting Files/LSCoreDataManager-Prefix.pch";
 				INFOPLIST_FILE = "LSCoreDataManager Example/Supporting Files/LSCoreDataManager-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -466,6 +482,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		5AAFBB92195C829A00964DAF /* LSModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				5AAFBB93195C829A00964DAF /* LSModel.xcdatamodel */,
+			);
+			currentVersion = 5AAFBB93195C829A00964DAF /* LSModel.xcdatamodel */;
+			path = LSModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 5A1D24CF1958228000DEB2D9 /* Project object */;
 }
