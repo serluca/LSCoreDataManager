@@ -7,12 +7,12 @@
 //
 
 #import "LSCoreDataManager.h"
-#import <CoreData/CoreData.h>
 
 @interface LSCoreDataManager()
 
 @property (strong, nonatomic) NSManagedObjectContext       *privateWriterContext;
-@property (strong, nonatomic) NSManagedObjectModel         *managedObjectModel;
+@property (strong, nonatomic, readwrite) NSManagedObjectContext *mainObjectContext;
+@property (strong, nonatomic,readwrite) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 @property (strong, nonatomic) NSURL *modelURL;
@@ -69,15 +69,12 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
-    
-    // subscribe to change notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_mocDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
 }
 
 #pragma mark - Getter
 -(NSManagedObjectContext*)getNewContext{
     NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    temporaryContext.parentContext = _mainObjectContext;
+    temporaryContext.parentContext = self.mainObjectContext;
     temporaryContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy;
     [temporaryContext setUndoManager:nil];
     return temporaryContext;
@@ -100,23 +97,6 @@
         _mainObjectContext.parentContext = self.privateWriterContext;
         return _mainObjectContext;
     }
-}
-
-#pragma mark - Notification 
-- (void)_mocDidSaveNotification:(NSNotification *)notification{
-    NSManagedObjectContext *savedContext = [notification object];
-    
-    // Ignore change notifications for the main MOC
-    if (_mainObjectContext == savedContext){
-        return;
-    }
-    
-    if (_mainObjectContext.persistentStoreCoordinator != savedContext.persistentStoreCoordinator){
-        // that's another database
-        return;
-    }
-    
-    [_mainObjectContext mergeChangesFromContextDidSaveNotification:notification];
 }
 
 #pragma mark - Public methods
@@ -162,4 +142,35 @@
         
     }];
 }
+
+#pragma mark - Fetch Request Template
+- (NSFetchRequest *)newFetchRequestFromTemplate:(NSString *)templateName
+                                     withValues:(NSDictionary *)valueDictionary
+                             andSortDescriptors:(NSArray *)sortdescriptors {
+    NSManagedObjectModel *model = self.managedObjectModel;
+    NSFetchRequest *fetchRequest = [model fetchRequestFromTemplateWithName:templateName substitutionVariables:valueDictionary];
+    fetchRequest.sortDescriptors = sortdescriptors;
+    
+    return fetchRequest;
+}
+
+- (NSFetchedResultsController *)newFetchedResultsControllerFromTemplate:(NSString *)templateName
+                                                                 values:(NSDictionary *)valueDictionary
+                                                        sortDescriptors:(NSArray *)sortdescriptors
+                                                         sectionKeyPath:(NSString *)sectionKeyPath
+                                                           andCacheName:(NSString *)cacheName {
+    
+    NSFetchRequest *fetchRequest = [self newFetchRequestFromTemplate:templateName
+                                                          withValues:valueDictionary
+                                                  andSortDescriptors:sortdescriptors];
+    
+    NSManagedObjectContext *context = self.mainObjectContext;
+    NSFetchedResultsController *fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                                      managedObjectContext:context
+                                                                                        sectionNameKeyPath:sectionKeyPath
+                                                                                                 cacheName:nil];
+    return fetchController;
+}
+
+
 @end
