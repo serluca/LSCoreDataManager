@@ -10,6 +10,7 @@
 #import "LSCoreDataManager.h"
 
 @interface LSFirstTableViewController ()
+@property (nonatomic,strong) NSManagedObjectContext *context;
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
@@ -18,7 +19,8 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    
+	
+	self.context = [[LSCoreDataManager sharedInstance] mainObjectContext];
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
@@ -34,22 +36,15 @@
 - (void)insertNewObject:(id)sender
 {
     // Use private context for insert a new object
-    NSManagedObjectContext *context = [[LSCoreDataManager sharedInstance] getNewContext];
+    NSManagedObjectContext *temporaryContext = [[LSCoreDataManager sharedInstance] getNewContext];
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:temporaryContext];
     
     // If appropriate, configure the new managed object.
     // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
     [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
     
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        // Replace this implementation with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
+	[[LSCoreDataManager sharedInstance] saveContext:temporaryContext];
 }
 
 #pragma mark - Table view data source
@@ -106,8 +101,8 @@
     }
     
     // Use Main Context for the fetch requests
-    NSManagedObjectContext *mainContext = [[LSCoreDataManager sharedInstance] mainObjectContext];
-    
+	NSManagedObjectContext *mainContext = self.context;
+	
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:mainContext];
