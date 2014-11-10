@@ -16,6 +16,9 @@
  */
 @property (strong, nonatomic, readonly) NSManagedObjectContext *mainObjectContext;
 
+
+
+
 /**
  *  The object Model
  */
@@ -45,5 +48,6 @@
  *
  *  @param context The context that you want to say
  */
+- (void)saveContext:(NSManagedObjectContext *)context;
 
 @end

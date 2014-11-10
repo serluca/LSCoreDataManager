@@ -32,22 +32,14 @@
     });
     return sharedInstance;
 }
+
 -(id)init{
     self = [super init];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeToDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeToDisk) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeToDisk) name:UIApplicationWillTerminateNotification object:nil];
+		
     }
     return self;
 }
-
--(void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
-}
-
 
 #pragma mark - Core Data Setup
 -(void)setupWithModelUrl:(NSURL*)modelURL storeUrl:(NSURL*)storeURL{
@@ -73,11 +65,9 @@
 
 #pragma mark - Getter
 -(NSManagedObjectContext*)getNewContext{
-    NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    temporaryContext.parentContext = self.mainObjectContext;
-    temporaryContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy;
-    [temporaryContext setUndoManager:nil];
-    return temporaryContext;
+	NSManagedObjectContext *tmpContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	tmpContext.parentContext = self.mainObjectContext;
+	return tmpContext;
 }
 
 -(NSManagedObjectContext*)privateWriterContext{
