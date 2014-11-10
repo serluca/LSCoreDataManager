@@ -31,10 +31,12 @@ and put this in `application:didFinishLaunchingWithOptions:`
 Now your Core Data is ready, just need to import LSCoreDataManager.h in all the classes in which you want to use it.
 
 ###Best practices
-Use the main context only for fetch requests or tries to minimize the operations of insertion, modification and deletion on it, use the mini contexts. When you save a mini context the changes are automatically shown in the main context. This will improve greatly your performance.
+Use the main context only for fetch requests or tries to minimize the operations of insertion, modification and deletion on it, use a temporary context getting it by `getNewContext`. When you save a temporary context the changes are automatically shown in the main context. This will improve greatly your performance.
 
-You can force to save to disk using the method `writeToDisk`, but it isn't recommended, let it be LSCoreDataManager to save, the class is in fact set up to make a save when the app is put in the backgroud, when it is terminated or when it receives a insufficient memory warning.
+Note:
 
-Use the method `saveContext:async: to save your mini contexts, will reduce your lines of code. The settings will be saved only if they contain changes and in case of errors, the application will be terminated by showing an error message. You can also decide whether to save the context in synchronous or asynchronous mode.
+Store always the contexts in your variables. Using the context by invoking them from the manager cause a memory leak. Look the example: `self.context = [[LSCoreDataManager sharedInstance] mainObjectContext];`
+
+Use always the method `saveContext:` to save all your context. Everything is saved avoiding to block the UI.
 
 The logic of this class follows the logic described in this article: [http://www.cocoanetics.com/2012/07/multi-context-coredata/](http://www.cocoanetics.com/2012/07/multi-context-coredata/)
