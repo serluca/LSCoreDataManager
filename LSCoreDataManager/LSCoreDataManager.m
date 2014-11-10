@@ -32,22 +32,14 @@
     });
     return sharedInstance;
 }
+
 -(id)init{
     self = [super init];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeToDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeToDisk) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeToDisk) name:UIApplicationWillTerminateNotification object:nil];
+		
     }
     return self;
 }
-
--(void)dealloc{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
-}
-
 
 #pragma mark - Core Data Setup
 -(void)setupWithModelUrl:(NSURL*)modelURL storeUrl:(NSURL*)storeURL{
@@ -73,11 +65,9 @@
 
 #pragma mark - Getter
 -(NSManagedObjectContext*)getNewContext{
-    NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    temporaryContext.parentContext = self.mainObjectContext;
-    temporaryContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy;
-    [temporaryContext setUndoManager:nil];
-    return temporaryContext;
+	NSManagedObjectContext *tmpContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	tmpContext.parentContext = self.mainObjectContext;
+	return tmpContext;
 }
 
 -(NSManagedObjectContext*)privateWriterContext{
@@ -100,77 +90,40 @@
 }
 
 #pragma mark - Public methods
-- (void)saveContext:(NSManagedObjectContext *)context async:(BOOL)async{
-    if (async) {
-        [context performBlock:^{
-            NSError *error;
-            if ([context hasChanges] && ![context save:&error])
-            {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
-            }
-        }];
-    }else{
-        [context performBlockAndWait:^{
-            NSError *error;
-            if ([context hasChanges] && ![context save:&error])
-            {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                abort();
-            }
-        }];
-    }
+- (void)saveContext:(NSManagedObjectContext *)context{
+	NSParameterAssert(context.persistentStoreCoordinator == self.persistentStoreCoordinator);
+	__block NSError *error;
+	
+	if (context == self.mainObjectContext) {
+		[self.mainObjectContext performBlock:^{
+			if (![self.mainObjectContext save:&error])
+				NSLog(@"Error %@", error.description);
+			else{
+				[self.privateWriterContext performBlock:^{
+					if (![self.privateWriterContext save:&error])
+						NSLog(@"Error %@", error.description);
+				}];
+			}
+		}];
+	}else{
+		[context performBlock:^{
+			if (![context save:&error])
+				NSLog(@"Error %@", error.description);
+			else{
+				[self.mainObjectContext performBlock:^{
+					if (![self.mainObjectContext save:&error])
+						NSLog(@"Error %@", error.description);
+					else{
+						[self.privateWriterContext performBlock:^{
+							if (![self.privateWriterContext save:&error])
+								NSLog(@"Error %@", error.description);
+						}];
+					}
+				}];
+			}
+		}];
+	}
+	
 }
-- (void)writeToDisk{
-    NSManagedObjectContext *writeManagedObjectContext = self.privateWriterContext;
-    NSManagedObjectContext *mainManagedObjectContext = self.mainObjectContext;
-    
-    [mainManagedObjectContext performBlockAndWait:^{
-        NSError *error = nil;
-        if ([mainManagedObjectContext hasChanges] && ![mainManagedObjectContext save:&error])
-        {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        }
-        
-        [writeManagedObjectContext performBlock:^{
-            NSError *error = nil;
-            if ([writeManagedObjectContext hasChanges] && ![writeManagedObjectContext save:&error])
-            {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            }
-        }];
-        
-    }];
-}
-
-#pragma mark - Fetch Request Template
-- (NSFetchRequest *)newFetchRequestFromTemplate:(NSString *)templateName
-                                     withValues:(NSDictionary *)valueDictionary
-                             andSortDescriptors:(NSArray *)sortdescriptors {
-    NSManagedObjectModel *model = self.managedObjectModel;
-    NSFetchRequest *fetchRequest = [model fetchRequestFromTemplateWithName:templateName substitutionVariables:valueDictionary];
-    fetchRequest.sortDescriptors = sortdescriptors;
-    
-    return fetchRequest;
-}
-
-- (NSFetchedResultsController *)newFetchedResultsControllerFromTemplate:(NSString *)templateName
-                                                                 values:(NSDictionary *)valueDictionary
-                                                        sortDescriptors:(NSArray *)sortdescriptors
-                                                         sectionKeyPath:(NSString *)sectionKeyPath
-                                                           andCacheName:(NSString *)cacheName {
-    
-    NSFetchRequest *fetchRequest = [self newFetchRequestFromTemplate:templateName
-                                                          withValues:valueDictionary
-                                                  andSortDescriptors:sortdescriptors];
-    
-    NSManagedObjectContext *context = self.mainObjectContext;
-    NSFetchedResultsController *fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                                      managedObjectContext:context
-                                                                                        sectionNameKeyPath:sectionKeyPath
-                                                                                                 cacheName:nil];
-    return fetchController;
-}
-
 
 @end
