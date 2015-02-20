@@ -35,7 +35,7 @@
  *  @param modelURL The model's URL
  *  @param storeURL The store's URL
  */
--(void)setupWithModelUrl:(NSURL*)modelURL storeUrl:(NSURL*)storeURL;
+- (void)setupWithModelUrl:(NSURL*)modelURL storeUrl:(NSURL*)storeURL;
 
 /**
  *  Create an setup an instance of LSCoreDataManager

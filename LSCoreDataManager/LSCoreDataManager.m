@@ -22,23 +22,20 @@
 
 @implementation LSCoreDataManager
 
-//+ (LSCoreDataManager*)sharedInstance{
-//    static LSCoreDataManager *sharedInstance;
-//    
-//    static dispatch_once_t done;
-//    dispatch_once(&done, ^{
-//        sharedInstance = [[LSCoreDataManager alloc] init];
-//    });
-//    return sharedInstance;
-//}
-//
-//-(id)init{
-//    self = [super init];
-//    if (self) {
-//		
-//    }
-//    return self;
-//}
++ (LSCoreDataManager*)sharedInstance{
+    static LSCoreDataManager *sharedInstance;
+    
+    static dispatch_once_t done;
+    dispatch_once(&done, ^{
+        sharedInstance = [[LSCoreDataManager alloc] init];
+    });
+    return sharedInstance;
+}
+
+- (void)setupWithModelUrl:(NSURL*)modelURL storeUrl:(NSURL*)storeURL{
+	self.modelUrl = modelURL;
+	self.storeUrl = storeURL;
+}
 
 - (instancetype)initWithWithModelUrl:(NSURL*)modelURL storeUrl:(NSURL*)storeURL{
 	self = [super init];
