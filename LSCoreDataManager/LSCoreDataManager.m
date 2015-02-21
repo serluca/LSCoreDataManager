@@ -16,7 +16,7 @@
 @property (strong, nonatomic, readwrite) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 @property (strong, nonatomic) NSManagedObjectContext *privateWriterContext;
-@property (strong, nonatomic, readwrite) NSManagedObjectContext *mainContext;
+@property (strong, nonatomic, readwrite) NSManagedObjectContext *mainObjectContext;
 
 @end
 
@@ -64,25 +64,25 @@
 }
 
 // Context on the NSMainQueueConcurrencyType. Use this for the things to show
-- (NSManagedObjectContext *)mainContext {
+- (NSManagedObjectContext *)mainObjectContext {
 	@synchronized(self){
-		if (!_mainContext) {
+		if (!_mainObjectContext) {
 			NSManagedObjectContext *writerContext = self.privateWriterContext;
 			if (writerContext != nil) {
-				_mainContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-				[_mainContext performBlockAndWait:^{
-					[_mainContext setParentContext:writerContext];
+				_mainObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+				[_mainObjectContext performBlockAndWait:^{
+					[_mainObjectContext setParentContext:writerContext];
 				}];
 			}
 		}
-		return _mainContext;
+		return _mainObjectContext;
 	}
 }
 
 #pragma mark - Saving Helper
 - (NSManagedObjectContext *)temporaryContext {
 	NSManagedObjectContext *newContext = nil;
-	NSManagedObjectContext *masterContext = [self mainContext];
+	NSManagedObjectContext *masterContext = [self mainObjectContext];
 	if (masterContext != nil) {
 		newContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
 		[newContext performBlockAndWait:^{
@@ -98,9 +98,9 @@
 	NSParameterAssert(context.persistentStoreCoordinator == self.persistentStoreCoordinator);
 	__block NSError *error;
 	
-	if (context == self.mainContext) {
-		[self.mainContext performBlockAndWait:^{
-			if (![self.mainContext save:&error]){
+	if (context == self.mainObjectContext) {
+		[self.mainObjectContext performBlockAndWait:^{
+			if (![self.mainObjectContext save:&error]){
 				NSLog(@"Error %@", error.description);
 			}else{
 				[self.privateWriterContext performBlock:^{
@@ -115,8 +115,8 @@
 			if (![context save:&error]){
 				NSLog(@"Error %@", error.description);
 			}else{
-				[self.mainContext performBlockAndWait:^{
-					if (![self.mainContext save:&error]){
+				[self.mainObjectContext performBlockAndWait:^{
+					if (![self.mainObjectContext save:&error]){
 						NSLog(@"Error %@", error.description);
 					}else{
 						[self.privateWriterContext performBlock:^{
