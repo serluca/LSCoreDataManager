@@ -36,7 +36,7 @@
 - (void)insertNewObject:(id)sender
 {
     // Use private context for insert a new object
-    NSManagedObjectContext *temporaryContext = [[LSCoreDataManager sharedInstance] getNewContext];
+    NSManagedObjectContext *temporaryContext = [[LSCoreDataManager sharedInstance] temporaryContext];
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
     NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:temporaryContext];
     
@@ -146,7 +146,12 @@
         case NSFetchedResultsChangeInsert:
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
-            
+		case NSFetchedResultsChangeMove:
+			NSLog(@"A table item was moved");
+			break;
+		case NSFetchedResultsChangeUpdate:
+			NSLog(@"A table item was updated");
+			break;
         case NSFetchedResultsChangeDelete:
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
