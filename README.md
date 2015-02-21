@@ -39,4 +39,4 @@ Store always the contexts in your variables. Using the context by invoking them 
 
 Use always the method `saveContext:` to save all your context. Everything is saved avoiding to block the UI.
 
-The logic of this class follows the logic described in this article: [http://www.cocoanetics.com/2012/07/multi-context-coredata/](http://www.cocoanetics.com/2012/07/multi-context-coredata/)
+The logic of this class follows the logic described in this article: [http://www.cocoanetics.com/2012/07/multi-context-coredata/](http://www.cocoanetics.com/2012/07/multi-context-coredata/) and also include some code from [http://nuthole.com/blog/2012/11/07/could-core-data-be-a-little-more-concise/](http://nuthole.com/blog/2012/11/07/could-core-data-be-a-little-more-concise/)
