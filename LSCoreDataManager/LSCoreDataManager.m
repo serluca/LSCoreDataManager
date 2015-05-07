@@ -167,8 +167,8 @@
 				NSLog(@"[LSCoreDataManager] Migration required - Unresolved errors %@, %@",error, [error userInfo]);
 				abort();
 #endif
-				// Force Abort() in Debug mode. It work in release mode.
-				// Is better to implement a custom migration instead of delete all and recreate again
+				// Force Abort() in Debug mode. It works in release mode.
+				// Note: Is better to implement a custom migration instead of delete all and recreate again
 				[self removeStoreAtUrl:self.storeUrl];
 				
 				if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeUrl options:options error:&error]) {

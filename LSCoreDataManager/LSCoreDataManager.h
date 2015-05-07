@@ -30,7 +30,7 @@
 + (LSCoreDataManager*)sharedInstance;
 
 /**
- *  Invokes this method in the app delegate to configure the manager
+ *  Invokes this method in the app delegate to configure the singleton manager
  *
  *  @param modelURL The model's URL
  *  @param storeURL The store's URL
