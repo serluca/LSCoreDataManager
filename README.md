@@ -31,7 +31,7 @@ and put this in `application:didFinishLaunchingWithOptions:`
 Now your Core Data is ready, just need to import LSCoreDataManager.h in all the classes in which you want to use it.
 
 ###Best practices
-Use the main context only for fetch requests or tries to minimize the operations of insertion, modification and deletion on it, use a temporary context getting it by `getNewContext`. When you save a temporary context the changes are automatically shown in the main context. This will improve greatly your performance.
+Use the main context only for fetch requests or tries to minimize the operations of insertion, modification and deletion on it, use a temporary context getting it by `temporaryContext`. When you save a temporary context the changes are automatically shown in the main context. This will improve greatly your performance.
 
 Note:
 
